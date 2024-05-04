@@ -153,13 +153,7 @@ export function CaloriesModal({
   console.log(formData);
 
   return (
-    <Modal
-      animationType="slide"
-      statusBarTranslucent
-      transparent
-      {...rest}
-      visible={true}
-    >
+    <Modal animationType="slide" statusBarTranslucent transparent {...rest}>
       <KeyboardAvoidingView behavior="padding" style={styles.container}>
         <TouchableOpacity
           style={{
