@@ -28,9 +28,26 @@ export const styles = StyleSheet.create({
   title: {
     color: THEME.COLORS.WHITE_TEXT,
     fontFamily: THEME.FONT_FAMILY.BOLD,
-    fontSize: THEME.FONT_SIZE.MODAL_TITLE_LIVE_REQUEST,
+    fontSize: THEME.FONT_SIZE.SM,
     textAlign: "center",
     width: "100%",
+  },
+  waring: {
+    width: "88%",
+    marginBottom: 10,
+    backgroundColor: THEME.COLORS.COVER,
+    borderRadius: 8,
+    padding: 10,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+  },
+  waringText: {
+    color: THEME.COLORS.WHITE_TEXT,
+    fontFamily: THEME.FONT_FAMILY.BOLD,
+    fontSize: THEME.FONT_SIZE.SM,
+    textAlign: "center",
   },
   label: {
     color: THEME.COLORS.WHITE_TEXT,
@@ -59,6 +76,10 @@ export const styles = StyleSheet.create({
     backgroundColor: THEME.COLORS.SHAPE,
     padding: 10,
     borderRadius: 8,
+    width: "85%",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   okText: {
     color: THEME.COLORS.WHITE_TEXT,

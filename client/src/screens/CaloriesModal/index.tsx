@@ -18,6 +18,7 @@ import { UserContext } from "../../contexts/user.context";
 import { SuccessContext } from "../../contexts/success.context";
 import { ErrorContext } from "../../contexts/error.context";
 import { caloriesPostResponse } from "../../api";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface Props extends ModalProps {
   handleClose: () => void;
@@ -175,6 +176,10 @@ export function CaloriesModal({
             <TouchableOpacity style={styles.closeArea} onPress={handleClose}>
               <Image style={styles.closeAreaIcon} source={CloseIcon} />
             </TouchableOpacity>
+            <View style={styles.waring}>
+              <MaterialCommunityIcons name="alert" size={20} color="white" />
+              <Text style={styles.waringText}>The values can be wrong!</Text>
+            </View>
             <Text style={styles.title}>
               Check the values and click on "Done" to finish
             </Text>
