@@ -48,8 +48,7 @@ export function UploadCalories({ route, navigation }: Props) {
       const formDataToPost = new FormData();
       const imageObject = createFileImageObject(imageSelected.assets[0].uri);
       console.log(imageObject);
-      const blob = new Blob([imageObject.uri], { type: imageObject.type });
-      formDataToPost.append("image", blob);
+      formDataToPost.append("image", imageObject as any);
       console.log(formDataToPost);
       api
         .post("/calories", formDataToPost, {
