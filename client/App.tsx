@@ -48,7 +48,6 @@ export default function App() {
     (async () => {
       console.log("App mounted");
       setIsLoading(false);
-      setErrorMessage("es um otario");
     })();
     return () => {
       console.log("App unmounted");

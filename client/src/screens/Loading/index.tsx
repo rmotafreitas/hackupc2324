@@ -6,15 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export function Loading() {
   return (
     <SafeAreaView style={styles.container}>
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "column-reverse",
-          paddingBottom: "40%",
-        }}
-      >
-        <ActivityIndicator color={THEME.COLORS.WHITE_TEXT} />
-      </View>
+      <ActivityIndicator size={THEME.FONT_SIZE.LG} color={THEME.COLORS.SHAPE} />
     </SafeAreaView>
   );
 }
