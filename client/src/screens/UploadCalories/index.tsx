@@ -7,7 +7,8 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "../../routes/app.routes";
 import * as ImagePicker from "expo-image-picker";
-import { api } from "../../api";
+import { api, caloriesPostResponse } from "../../api";
+import { CaloriesModal } from "../CaloriesModal";
 
 export const getUserSavedDataOrNull = async () => {
   try {
@@ -32,6 +33,11 @@ const createFileImageObject = (file: string) => {
 
 export function UploadCalories({ route, navigation }: Props) {
   const [image, setImage] = useState<string | null>(null);
+  const [isCaloriesModalVisible, setIsCaloriesModalVisible] = useState(false);
+
+  const [formData, setFormData] = useState<caloriesPostResponse>(
+    {} as caloriesPostResponse
+  );
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -47,18 +53,26 @@ export function UploadCalories({ route, navigation }: Props) {
       setImage(imageSelected.assets[0].uri);
       const formDataToPost = new FormData();
       const imageObject = createFileImageObject(imageSelected.assets[0].uri);
-      console.log(imageObject);
       formDataToPost.append("image", imageObject as any);
-      console.log(formDataToPost);
-      api
-        .post("/calories", formDataToPost, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          console.log(response);
-        });
+      let res = await api.post("/calories", formDataToPost, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      let calories: caloriesPostResponse = res.data;
+      if (!calories) {
+        calories = {
+          nutrionValue: 0,
+          energyValue: 0,
+          carbonValue: 0,
+          sugarValue: 0,
+          proteinValue: 0,
+          saltValue: 0,
+        };
+      }
+      setFormData(calories);
+      setIsCaloriesModalVisible(true);
+      console.log(calories.carbonValue);
     }
   };
 
@@ -77,6 +91,15 @@ export function UploadCalories({ route, navigation }: Props) {
             {image && (
               <Image source={{ uri: image }} style={styles.foodImage} />
             )}
+            <CaloriesModal
+              visible={isCaloriesModalVisible}
+              handleClose={() => {
+                setIsCaloriesModalVisible(false);
+                setImage(null);
+              }}
+              formData={formData}
+              setFormData={setFormData}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>
