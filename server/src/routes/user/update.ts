@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { prisma } from "../../lib/prisma";
 import { FastifyJWT } from "@fastify/jwt";
+import { getUserStats } from "./eat";
 
 export const updateUser = async (app: FastifyInstance) => {
   app.post("/me", async (request, reply) => {
@@ -58,7 +59,12 @@ export const updateUser = async (app: FastifyInstance) => {
           saltValue: saltValue ?? 0,
         },
       });
-      return newUser;
+      const stats = await getUserStats(newUser);
+      return {
+        ...newUser,
+        stats,
+        password: undefined,
+      };
     }
 
     if (email && password && !newPassword) {
@@ -86,8 +92,11 @@ export const updateUser = async (app: FastifyInstance) => {
         secure: true,
       });
 
+      const stats = await getUserStats(user);
+
       return {
         ...user,
+        stats,
         password: undefined,
         access_token: token,
       };
@@ -129,8 +138,11 @@ export const updateUser = async (app: FastifyInstance) => {
       },
     });
 
+    const stats = await getUserStats(user);
+
     return {
       ...updatedUser,
+      stats,
       password: undefined,
     };
   });
