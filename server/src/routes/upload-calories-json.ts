@@ -1,16 +1,54 @@
-import { openai } from "./../lib/opeanai";
 import { FastifyInstance } from "fastify";
 import { z } from "zod";
+import { openai } from "./../lib/opeanai";
 // import { prisma } from "../lib/prisma";
+import { fastifyMultipart } from "@fastify/multipart";
 import tesseract from "node-tesseract-ocr";
+import fs from "node:fs";
+import path from "node:path";
+import { randomUUID } from "node:crypto";
+import { pipeline } from "node:stream";
+import { promisify } from "node:util";
+const pump = promisify(pipeline);
 
 export const postAndGetImageInformation = async (app: FastifyInstance) => {
+  app.register(fastifyMultipart, {
+    limits: {
+      fileSize: 1_048_556 * 10, // 10MB
+    },
+  });
   app.post("/calories", async (request, reply) => {
+    console.log("Request received");
+
     // const userId = request.userID;
     // if (!userId) {
     //   throw new Error("Not authenticated");
     // }
+    const data = await request.file();
+    if (!data) {
+      return reply.status(400).send({ error: "No file uploaded" });
+    }
 
+    const extension = path.extname(data.filename);
+
+    if (extension !== ".png" && extension !== ".jpg" && extension !== ".jpeg") {
+      return reply
+        .status(400)
+        .send({ error: "Invalid file type, only images are allowed" });
+    }
+
+    const fileBaseName = path.basename(data.filename, extension);
+    const fileUploadName = `${fileBaseName}-${randomUUID()}${extension}`;
+
+    const uploadDir = path.resolve(
+      __dirname,
+      "..",
+      "..",
+      "tmp",
+      fileUploadName
+    );
+
+    await pump(data.file, fs.createWriteStream(uploadDir));
     const bodySchema = z.object({
       // startLocationITACode: z.string(),
       // endLocationITACode: z.string(),
@@ -24,7 +62,7 @@ export const postAndGetImageInformation = async (app: FastifyInstance) => {
     };
 
     const backText = await tesseract
-      .recognize("https://i.imgur.com/2vTiSu6.jpeg", config)
+      .recognize(uploadDir, config)
       .catch((error) => {
         console.log(error.message);
       });
