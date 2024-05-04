@@ -30,7 +30,7 @@ export function AppRoutes() {
           borderTopWidth: 3,
         },
       }}
-      initialRouteName={/* user !== null ? "home" : */ "Login"}
+      initialRouteName={/* user !== null ? "home" : */ "Home"}
       backBehavior="none"
     >
       <Screen

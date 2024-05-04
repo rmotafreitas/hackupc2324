@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dimensions,
   Image,
   ImageSourcePropType,
+  Pressable,
   ScrollView,
   Text,
   View,
@@ -19,6 +20,24 @@ import SunriseImage from "./../../assets/Sunrise.png";
 import SunImage from "./../../assets/Sun.png";
 import MoonImage from "./../../assets/Moon (1).png";
 import PlusImage from "./../../assets/Plus.png";
+import UnfoldImage from "./../../assets/Group 7.png";
+import UnfoldWhiteImage from "./../../assets/Group 7 (1).png";
+import { Ionicons } from "@expo/vector-icons";
+import { THEME } from "../../theme";
+
+function MyCheckbox() {
+  const [checked, setChecked] = useState(false);
+  return (
+    <Pressable
+      style={[styles.checkboxBase, checked && styles.checkboxChecked]}
+      onPress={() => setChecked(!checked)}
+    >
+      {checked && (
+        <Ionicons name="checkmark" size={20} color={THEME.COLORS.TEXT} />
+      )}
+    </Pressable>
+  );
+}
 
 export const getUserSavedDataOrNull = async () => {
   try {
@@ -54,7 +73,7 @@ export function Home({ route, navigation }: Props) {
               flexDirection: "row",
               gap: 10,
               paddingHorizontal: 10,
-              marginBottom: 20,
+              marginBottom: 25,
             }}
           >
             <Stat label="Calories" value="0 / 1900" />
@@ -95,6 +114,33 @@ export function Home({ route, navigation }: Props) {
               value4={0}
               img={MoonImage}
             />
+          </View>
+          <View>
+            <View style={styles.ExtraUp}>
+              <Extra label="Steps" value="14000 / 0" />
+              <Extra label="Weight" img={PlusImage} />
+            </View>
+            <View style={styles.ExtraDown}>
+              <Extra label="Training" img={PlusImage} />
+              <Extra label="Period" check />
+            </View>
+          </View>
+          <View
+            style={{
+              width: Dimensions.get("screen").width * 0.95,
+              borderColor: "#E89D57",
+              borderWidth: 2,
+              borderRadius: 5,
+            }}
+          >
+            <View style={styles.ProgressBox}>
+              <Text style={styles.ProgressText}>Progress</Text>
+              <Text style={styles.ProgressDate}>28.04-05.05</Text>
+              <Image
+                source={UnfoldWhiteImage}
+                style={styles.UnfoldWhiteImage}
+              />
+            </View>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -156,6 +202,41 @@ function Meals({ label, value1, value2, value3, value4, img }: MealsBox) {
         <Text style={styles.MealBoxText}>{value2}</Text>
         <Text style={styles.MealBoxText}>{value3}</Text>
         <Text style={styles.MealBoxText}>{value4}</Text>
+      </View>
+    </View>
+  );
+}
+
+interface ExtraBox {
+  label: string;
+  value?: string;
+  img?: ImageSourcePropType;
+  check?: boolean;
+}
+
+function Extra({ label, value, img, check }: ExtraBox) {
+  const [checkPeriod, setCheckPeriod] = useState<boolean>(false);
+
+  const handleClickCheckPeriod = () => {
+    setCheckPeriod(!checkPeriod);
+  };
+
+  return (
+    <View
+      style={{
+        borderColor: "#E89D57",
+        borderWidth: 2,
+        borderRadius: 5,
+      }}
+    >
+      <View style={styles.StepsUp}>
+        <Text style={styles.StepsUpText}>{label}</Text>
+        <Image source={UnfoldImage} style={styles.UnfoldImage} />
+      </View>
+      <View style={styles.StepsDown}>
+        {value && <Text style={styles.boxText}>{value}</Text>}
+        {img && <Image source={img} style={styles.PlusImage2} />}
+        {check && <MyCheckbox />}
       </View>
     </View>
   );
