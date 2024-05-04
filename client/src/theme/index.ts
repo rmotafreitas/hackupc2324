@@ -12,8 +12,8 @@ export const THEME = {
 
     PRIMARY: "#3587A4",
     COVER: "#2D848A",
-    SUCCESS: "green",
-    ALERT: "red",
+    SUCCESS: "#00FF00",
+    ALERT: "#FF0000",
     OVERLAY: "rgba(0,0,0,0.6)",
   },
 
