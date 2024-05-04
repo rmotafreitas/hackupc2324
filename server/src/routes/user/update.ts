@@ -19,6 +19,7 @@ export const updateUser = async (app: FastifyInstance) => {
       sugarValue: z.number().optional(),
       proteinValue: z.number().optional(),
       saltValue: z.number().optional(),
+      newPassword: z.string().optional(),
     });
 
     const {
@@ -31,6 +32,7 @@ export const updateUser = async (app: FastifyInstance) => {
       sugarValue,
       proteinValue,
       saltValue,
+      newPassword,
     } = bodySchema.parse(request.body);
 
     const user = await prisma.user.findUnique({
@@ -59,7 +61,7 @@ export const updateUser = async (app: FastifyInstance) => {
       return newUser;
     }
 
-    if (email && password) {
+    if (email && password && !newPassword) {
       const user = await prisma.user.findUnique({
         where: {
           email: email,
@@ -95,6 +97,20 @@ export const updateUser = async (app: FastifyInstance) => {
     const decode = request.jwt.verify<FastifyJWT["user"]>(tokenjwt);
     if (decode.email !== email) {
       return { message: "Invalid token" };
+    }
+
+    if (newPassword) {
+      if (password !== user.password) {
+        throw new Error("Invalid password");
+      }
+      await prisma.user.update({
+        where: {
+          email: decode.email,
+        },
+        data: {
+          password: newPassword,
+        },
+      });
     }
 
     const updatedUser = await prisma.user.update({
