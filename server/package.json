@@ -25,9 +25,9 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@fastify/cookie": "^9.1.0",
+    "@fastify/cookie": "^9.3.1",
     "@fastify/cors": "^8.3.0",
-    "@fastify/jwt": "^7.2.2",
+    "@fastify/jwt": "^7.2.4",
     "@fastify/multipart": "^7.7.3",
     "@fastify/static": "^6.11.2",
     "@prisma/client": "5.3.0",

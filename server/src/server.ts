@@ -1,44 +1,49 @@
 import { fastifyCors } from "@fastify/cors";
 import fastifystatic from "@fastify/static";
 import "dotenv/config";
-import { FastifyReply, FastifyRequest, fastify } from "fastify";
-import * as jose from "jose";
+import { fastify, FastifyReply, FastifyRequest } from "fastify";
 import path from "path";
-// import { prisma } from "./lib/prisma";
-const host = "RENDER" in process.env ? `0.0.0.0` : `localhost`;
 import { postAndGetImageInformation } from "./routes/upload-calories-json.ts";
 import { updateUser } from "./routes/user/update.ts";
 
+// JWT SETUP
+import fjwt, { FastifyJWT } from "@fastify/jwt";
+import fCookie from "@fastify/cookie";
+
+const host = "RENDER" in process.env ? `0.0.0.0` : `localhost`;
+
 const app = fastify();
-
-const authJWTCHeaderHanko = async (
-  request: FastifyRequest,
-  reply: FastifyReply
-) => {
-  const token = request.headers.authorization?.split(" ")[1] ?? null;
-
-  // Check if the token is valid and not expired
-  try {
-    const payload = jose.decodeJwt(token ?? "");
-    const userID = payload.sub;
-
-    if (!userID || token === undefined) {
-      throw new Error("Invalid token");
-    }
-
-    // @ts-expect-error
-    request.userID = userID;
-  } catch (error) {
-    // @ts-expect-error
-    request.userID = null;
-  }
-};
 
 app.register(fastifyCors, {
   origin: "*",
 });
 
-// app.addHook("preHandler", authJWTCHeaderHanko);
+// MORE JWT SETUP
+app.register(fjwt, { secret: "supersecretcode-" + process.env.JWT_SECRET });
+app.decorate(
+  "authenticate",
+  async (req: FastifyRequest, reply: FastifyReply) => {
+    const token =
+      req.cookies.access_token || req?.headers?.authorization?.split(" ")[1];
+
+    if (!token) {
+      return reply.status(401).send({ message: "Authentication required" });
+    }
+    // here decoded will be a different type by default but we want it to be of user-payload type
+    const decoded = req.jwt.verify<FastifyJWT["user"]>(token);
+    req.user = decoded;
+  }
+);
+app.addHook("preHandler", (req, res, next) => {
+  // here we are
+  req.jwt = app.jwt;
+  return next();
+});
+// cookies
+app.register(fCookie, {
+  secret: "some-secret-key",
+  hook: "preHandler",
+});
 
 app.get("/ping", async (request, reply) => {
   return { ping: "pong 🏓" };
