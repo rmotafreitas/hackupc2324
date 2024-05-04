@@ -8,7 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "../../routes/app.routes";
 import * as ImagePicker from "expo-image-picker";
 import { api, caloriesPostResponse } from "../../api";
-import { CaloriesModal } from "../CaloriesModal";
+import { CaloriesModal } from "../../components/CaloriesModal";
 
 export const getUserSavedDataOrNull = async () => {
   try {

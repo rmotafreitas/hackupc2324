@@ -8,7 +8,6 @@ export const styles = StyleSheet.create({
   containerApp: {
     minHeight: "100%",
     flexDirection: "column",
-    justifyContent: "center",
     alignItems: "center",
   },
   homeText: {
@@ -16,4 +15,21 @@ export const styles = StyleSheet.create({
     fontFamily: THEME.FONT_FAMILY.BLACK,
     fontSize: THEME.FONT_SIZE.LG,
   },
+  todayDiv:{
+    width: 280,
+    height: 40,
+    borderColor: "#E89D57",
+    borderWidth: 2,
+    borderRadius: 5,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  todayText:{
+   fontSize: THEME.FONT_SIZE.LG,
+   fontFamily: THEME.FONT_FAMILY.BOLD,
+   color: "#1B4F33"
+  },
+  MenuImage:{
+    
+  }
 });
