@@ -68,6 +68,9 @@ export const updateUser = async (app: FastifyInstance) => {
       if (!user) {
         throw new Error("Invalid input");
       }
+      if (password !== user.password) {
+        throw new Error("Invalid password");
+      }
       const payload = {
         id: user.id,
         email: user.email,
