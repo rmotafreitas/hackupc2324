@@ -7,6 +7,7 @@ import path from "path";
 // import { prisma } from "./lib/prisma";
 const host = "RENDER" in process.env ? `0.0.0.0` : `localhost`;
 import { postAndGetImageInformation } from "./routes/upload-calories-json.ts";
+import { updateUser } from "./routes/user/update.ts";
 
 const app = fastify();
 
@@ -44,6 +45,7 @@ app.get("/ping", async (request, reply) => {
 });
 
 app.register(postAndGetImageInformation);
+app.register(updateUser);
 
 app.register(fastifystatic, {
   root: path.join(__dirname, "..", "tmp"),

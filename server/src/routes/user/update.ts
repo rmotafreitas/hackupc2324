@@ -3,55 +3,80 @@ import { z } from "zod";
 import { prisma } from "../../lib/prisma";
 
 export const updateUser = async (app: FastifyInstance) => {
-  app.post("/user/save", async (request, reply) => {
-    // @ts-expect-error
-    const userId = request.userID;
-    if (!userId) {
-      throw new Error("Not authenticated");
-    }
+  app.post("/me", async (request, reply) => {
+    // const userId = request.userID;
+    // if (!userId) {
+    //   throw new Error("Not authenticated");
+    // }
 
     const bodySchema = z.object({
-      wishList: z.string().optional(),
-      email: z.string().email().optional(),
-      subscribedToNewsletter: z.boolean().optional(),
-      itaCode: z.string().optional(),
+      name: z.string().optional(),
+      email: z.string().email(),
+      password: z.string().optional(),
+      nutrionValue: z.number().optional(),
+      energyValue: z.number().optional(),
+      carbonValue: z.number().optional(),
+      sugarValue: z.number().optional(),
+      proteinValue: z.number().optional(),
+      saltValue: z.number().optional(),
     });
 
-    const { wishList, email, subscribedToNewsletter, itaCode } =
-      bodySchema.parse(request.body);
+    const {
+      name,
+      email,
+      password,
+      nutrionValue,
+      energyValue,
+      carbonValue,
+      sugarValue,
+      proteinValue,
+      saltValue,
+    } = bodySchema.parse(request.body);
 
     const user = await prisma.user.findUnique({
       where: {
-        id: userId,
+        email: email,
       },
     });
 
     if (!user) {
-      if (!email) {
-        throw new Error("Email is required");
+      if (!email || !password || !name) {
+        throw new Error("Invalid input");
       }
       const newUser = await prisma.user.create({
         data: {
-          id: userId as string,
-          wishList: wishList ?? "",
-          email: email,
-          subscribedToNewsletter: subscribedToNewsletter ?? false,
-          itaCode: itaCode ?? "",
+          email,
+          name,
+          password,
+          nutrionValue: nutrionValue ?? 0,
+          energyValue: energyValue ?? 0,
+          carbonValue: carbonValue ?? 0,
+          sugarValue: sugarValue ?? 0,
+          proteinValue: proteinValue ?? 0,
+          saltValue: saltValue ?? 0,
         },
       });
       return newUser;
     }
 
+    if (password) {
+      if (user.password !== password) {
+        throw new Error("Invalid password");
+      }
+    }
     const updatedUser = await prisma.user.update({
       where: {
-        id: userId,
+        email,
       },
       data: {
-        wishList: wishList ?? user.wishList,
-        email: email ?? user.email,
-        subscribedToNewsletter:
-          subscribedToNewsletter ?? user.subscribedToNewsletter,
-        itaCode: itaCode ?? user.itaCode,
+        password: password ?? user.password,
+        name: name ?? user.name,
+        nutrionValue: nutrionValue ?? user.nutrionValue,
+        energyValue: energyValue ?? user.energyValue,
+        carbonValue: carbonValue ?? user.carbonValue,
+        sugarValue: sugarValue ?? user.sugarValue,
+        proteinValue: proteinValue ?? user.proteinValue,
+        saltValue: saltValue ?? user.saltValue,
       },
     });
 

@@ -54,8 +54,6 @@ export const styles = StyleSheet.create({
     fontFamily: THEME.FONT_FAMILY.BOLD,
     fontSize: THEME.FONT_SIZE.SM,
     textAlign: "left",
-    marginTop: 10,
-    marginBottom: 3,
     width: "100%",
   },
   input: {
@@ -66,7 +64,6 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     width: "100%",
     borderRadius: 8,
-    marginBottom: 5,
   },
   inputDisabled: {
     opacity: 0.5,

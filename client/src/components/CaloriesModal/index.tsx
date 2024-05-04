@@ -28,12 +28,12 @@ interface Props extends ModalProps {
 
 type Status = "idle" | "requesting";
 
-interface LabelProps {
+export interface LabelProps {
   text: string;
   optional?: boolean;
 }
 
-function Label({ text, optional }: LabelProps) {
+export function Label({ text, optional }: LabelProps) {
   return (
     <Text style={styles.label}>
       {text}
@@ -42,7 +42,7 @@ function Label({ text, optional }: LabelProps) {
   );
 }
 
-interface InputProps {
+export interface InputProps {
   value: string;
   onChangeText: (text: string) => void;
   disabled?: boolean;
@@ -51,7 +51,7 @@ interface InputProps {
   onEndEditing?: () => Promise<void>;
 }
 
-function Input({
+export function Input({
   value,
   onChangeText,
   disabled,

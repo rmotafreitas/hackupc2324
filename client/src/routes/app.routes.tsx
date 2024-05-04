@@ -4,13 +4,18 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Home } from "../screens/Home";
 import { THEME } from "../theme";
 import { UploadCalories } from "../screens/UploadCalories";
+import { Login, Register } from "../screens/Auth";
 
 interface HomeProps {}
 interface UploadCaloriesProps {}
+interface LoginProps {}
+interface RegisterProps {}
 
 export type RootStackParamList = {
   Home: HomeProps;
   UploadCalories: UploadCaloriesProps;
+  Login: LoginProps;
+  Register: RegisterProps;
 };
 
 const { Navigator, Screen } = createBottomTabNavigator<RootStackParamList>();
@@ -25,9 +30,33 @@ export function AppRoutes() {
           borderTopWidth: 3,
         },
       }}
-      // initialRouteName={user !== null ? "home" : "login"}
+      initialRouteName={/* user !== null ? "home" : */ "Login"}
       backBehavior="none"
     >
+      <Screen
+        options={{
+          tabBarButton: () => null,
+          tabBarActiveTintColor: THEME.COLORS.WHITE_TEXT,
+          tabBarInactiveTintColor: THEME.COLORS.ALERT,
+          tabBarStyle: {
+            display: "none",
+          },
+        }}
+        name="Login"
+        component={Login}
+      />
+      <Screen
+        options={{
+          tabBarButton: () => null,
+          tabBarActiveTintColor: THEME.COLORS.WHITE_TEXT,
+          tabBarInactiveTintColor: THEME.COLORS.ALERT,
+          tabBarStyle: {
+            display: "none",
+          },
+        }}
+        name="Register"
+        component={Register}
+      />
       <Screen
         options={{
           tabBarLabel: "Home",
