@@ -74,7 +74,7 @@ export const postAndGetImageInformation = async (app: FastifyInstance) => {
     let prompt = `
     Your role is to generate a json for this food, taking into account his parsed text from the back of the food package
 
-Return ONLY a json object as in the example below, if there no information in certain keys, create it up yoursef, dont leave any empty string neither empty arrays, dont put [], craft/create the information yourself if needed:
+Return ONLY a json object as in the example below, if there no information in certain keys, create it up yourself, dont leave any empty string neither empty NaN, dont put [], craft/create the information yourself if needed:
 '''
 {
 	"nutrionValue": INTEGER FILL,

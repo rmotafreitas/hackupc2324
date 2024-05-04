@@ -89,7 +89,9 @@ export function CaloriesModal({
       label: "Nutrition Value",
       name: "nutrionValue",
       input: {
-        value: formData?.nutrionValue,
+        value: isNaN(formData?.nutrionValue)
+          ? "0"
+          : formData?.nutrionValue.toString(),
         onChangeText: (text: string) =>
           setFormData({ ...formData, nutrionValue: Number(text) }),
         placeholder: "Enter the nutrition value",
@@ -99,7 +101,9 @@ export function CaloriesModal({
       label: "Energy Value",
       name: "energyValue",
       input: {
-        value: formData?.energyValue,
+        value: isNaN(formData?.energyValue)
+          ? "0"
+          : formData?.energyValue.toString(),
         onChangeText: (text: string) =>
           setFormData({ ...formData, energyValue: Number(text) }),
         placeholder: "Enter the energy value",
@@ -109,7 +113,9 @@ export function CaloriesModal({
       label: "Carbon Value",
       name: "carbonValue",
       input: {
-        value: formData?.carbonValue,
+        value: isNaN(formData?.carbonValue)
+          ? "0"
+          : formData?.carbonValue.toString(),
         onChangeText: (text: string) =>
           setFormData({ ...formData, carbonValue: Number(text) }),
         placeholder: "Enter the carbon value",
@@ -119,7 +125,9 @@ export function CaloriesModal({
       label: "Sugar Value",
       name: "sugarValue",
       input: {
-        value: "",
+        value: isNaN(formData?.sugarValue)
+          ? ""
+          : formData?.sugarValue.toString(),
         onChangeText: (text: string) =>
           setFormData({ ...formData, sugarValue: Number(text) }),
         placeholder: "Enter the sugar value",
@@ -129,7 +137,9 @@ export function CaloriesModal({
       label: "Protein Value",
       name: "proteinValue",
       input: {
-        value: formData?.proteinValue,
+        value: isNaN(formData?.proteinValue)
+          ? ""
+          : formData?.proteinValue.toString(),
         onChangeText: (text: string) =>
           setFormData({ ...formData, proteinValue: Number(text) }),
         placeholder: "Enter the protein value",
@@ -140,7 +150,7 @@ export function CaloriesModal({
       name: "saltValue",
       optional: false,
       input: {
-        value: formData?.saltValue,
+        value: isNaN(formData?.saltValue) ? "" : formData?.saltValue.toString(),
         onChangeText: (text: string) =>
           setFormData({ ...formData, saltValue: Number(text) }),
         placeholder: "Enter the salt value",
@@ -181,7 +191,7 @@ export function CaloriesModal({
               <Text style={styles.waringText}>The values can be wrong!</Text>
             </View>
             <Text style={styles.title}>
-              Check the values and click on "Done" to finish
+              Check the values and click on "Eat!" to finish
             </Text>
             {FORM_BUILDER_MAPPER.map((item, index) => (
               <View
@@ -207,7 +217,7 @@ export function CaloriesModal({
               <ActivityIndicator color={THEME.COLORS.WHITE_TEXT} />
             ) : (
               <TouchableOpacity onPress={() => {}} style={styles.okButton}>
-                <Text style={styles.okText}>Done</Text>
+                <Text style={styles.okText}>Eat! 🍗</Text>
               </TouchableOpacity>
             )}
           </ScrollView>
