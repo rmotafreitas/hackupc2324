@@ -1,5 +1,12 @@
 import React from "react";
-import { Image, ScrollView, Text, View } from "react-native";
+import {
+  Dimensions,
+  Image,
+  ImageSourcePropType,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 import { Background } from "../../components/Background";
 import { styles } from "./styles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -8,6 +15,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "../../routes/app.routes";
 import MenuImage from "./../../assets/menuButton.png";
 import SearchImge from "./../../assets/Search.png";
+import SunriseImage from "./../../assets/Sunrise.png";
+import SunImage from "./../../assets/Sun.png";
+import MoonImage from "./../../assets/Moon (1).png";
+import PlusImage from "./../../assets/Plus.png";
 
 export const getUserSavedDataOrNull = async () => {
   try {
@@ -32,14 +43,58 @@ export function Home({ route, navigation }: Props) {
               marginBottom: 20,
             }}
           >
-            <Image source={MenuImage} style={styles.MenuImage} />
+            <Image source={MenuImage} />
             <View style={styles.todayDiv}>
               <Text style={styles.todayText}>Today</Text>
             </View>
-            <Image source={SearchImge} style={styles.MenuImage} />
+            <Image source={SearchImge} />
           </View>
-          <View>
-            <Stat />
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 10,
+              paddingHorizontal: 10,
+              marginBottom: 20,
+            }}
+          >
+            <Stat label="Calories" value="0 / 1900" />
+            <Stat label="Protein" value="0 / 85" />
+            <Stat label="Carbs" value="0" />
+            <Stat label="Fat" value="0" />
+          </View>
+          <View style={styles.MealBoxAll}>
+            <Meals
+              label="Breakfast"
+              value1={0}
+              value2={0}
+              value3={0}
+              value4={0}
+              img={SunriseImage}
+            />
+            <Meals
+              label="Lunch"
+              value1={0}
+              value2={0}
+              value3={0}
+              value4={0}
+              img={SunImage}
+            />
+            <Meals
+              label="Dinner"
+              value1={0}
+              value2={0}
+              value3={0}
+              value4={0}
+              img={SunriseImage}
+            />
+            <Meals
+              label="Other"
+              value1={0}
+              value2={0}
+              value3={0}
+              value4={0}
+              img={MoonImage}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -47,22 +102,60 @@ export function Home({ route, navigation }: Props) {
   );
 }
 
-function Stat() {
+interface StatProps {
+  label: string;
+  value: string;
+}
+
+function Stat({ label, value }: StatProps) {
   return (
     <View
       style={{
         borderColor: "#E89D57",
         borderWidth: 2,
         borderRadius: 5,
-        paddingHorizontal: 15,
-        paddingVertical: 5,
+        flex: 1,
       }}
     >
-      <View>
-        <Text>Calories</Text>
+      <View style={styles.CaloriesUp}>
+        <Text style={styles.boxText}>{label}</Text>
       </View>
-      <View>
-        <Text>0 / 1900</Text>
+      <View style={styles.boxTextDiv}>
+        <Text style={styles.boxText}>{value}</Text>
+      </View>
+    </View>
+  );
+}
+
+interface MealsBox {
+  label: string;
+  value1: number;
+  value2: number;
+  value3: number;
+  value4: number;
+  img: ImageSourcePropType;
+}
+
+function Meals({ label, value1, value2, value3, value4, img }: MealsBox) {
+  return (
+    <View
+      style={{
+        width: Dimensions.get("screen").width * 0.95,
+        borderColor: "#E89D57",
+        borderWidth: 2,
+        borderRadius: 5,
+      }}
+    >
+      <View style={styles.Meals}>
+        <Image source={img} style={styles.SunriseImage} />
+        <Text style={styles.boxText}>{label}</Text>
+        <Image source={PlusImage} style={styles.PlusImage} />
+      </View>
+      <View style={styles.MealBoxIndex}>
+        <Text style={styles.MealBoxText}>{value1}</Text>
+        <Text style={styles.MealBoxText}>{value2}</Text>
+        <Text style={styles.MealBoxText}>{value3}</Text>
+        <Text style={styles.MealBoxText}>{value4}</Text>
       </View>
     </View>
   );
