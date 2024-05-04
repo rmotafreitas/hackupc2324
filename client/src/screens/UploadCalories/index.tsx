@@ -7,6 +7,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "../../routes/app.routes";
 import * as ImagePicker from "expo-image-picker";
+import { api } from "../../api";
 
 export const getUserSavedDataOrNull = async () => {
   try {
@@ -18,6 +19,16 @@ export const getUserSavedDataOrNull = async () => {
 };
 
 type Props = NativeStackScreenProps<RootStackParamList, "UploadCalories">;
+
+const createFileImageObject = (file: string) => {
+  let uriParts = file.split(".");
+  let fileType = uriParts[uriParts.length - 1];
+  return {
+    uri: file,
+    name: `photo.${fileType}`,
+    type: `file/${fileType}`,
+  };
+};
 
 export function UploadCalories({ route, navigation }: Props) {
   const [image, setImage] = useState<string | null>(null);
@@ -31,10 +42,24 @@ export function UploadCalories({ route, navigation }: Props) {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      const imageSelected = result;
+      setImage(imageSelected.assets[0].uri);
+      const formDataToPost = new FormData();
+      const imageObject = createFileImageObject(imageSelected.assets[0].uri);
+      console.log(imageObject);
+      const blob = new Blob([imageObject.uri], { type: imageObject.type });
+      formDataToPost.append("image", blob);
+      console.log(formDataToPost);
+      api
+        .post("/calories", formDataToPost, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          console.log(response);
+        });
     }
   };
 

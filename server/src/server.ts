@@ -54,7 +54,7 @@ app.register(fastifystatic, {
 app
   .listen({
     host,
-    port: Number(process.env.PORT) || 3000,
+    port: Number(process.env.PORT) || 8080,
   })
   .then((address) => {
     console.log(`Server is listening on ${address}`);
