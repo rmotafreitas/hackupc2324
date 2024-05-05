@@ -153,7 +153,7 @@ export function Table({ route, navigation }: Props) {
                 console.log("Index", index);
                 console.log("Array of changes", arrayOfChanges);
                 const isHigherThanPrevious =
-                  arrayOfChanges && arrayOfChanges[index] < 0;
+                  arrayOfChanges && arrayOfChanges[index] > 0;
                 const isLastIndex =
                   // @ts-expect-error
                   index === userContext?.user?.stats.Weight.length - 1;
