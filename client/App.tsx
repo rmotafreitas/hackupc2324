@@ -1,4 +1,4 @@
-import { StatusBar } from "react-native";
+import { LogBox, StatusBar } from "react-native";
 import { Background } from "./src/components/Background";
 
 import { useEffect, useMemo, useState } from "react";
@@ -61,6 +61,8 @@ export default function App() {
       }
     };
   }, []);
+
+  LogBox.ignoreAllLogs();
 
   return (
     <>
