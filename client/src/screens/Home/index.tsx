@@ -1,4 +1,8 @@
-import React, { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -6,24 +10,32 @@ import {
   Pressable,
   ScrollView,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
-import { Background } from "../../components/Background";
-import { styles } from "./styles";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  api,
+  foodInterfaceType,
+  userInterfaceType,
+  weightInterfaceType,
+} from "../../api";
+import { Background } from "../../components/Background";
+import { WeightModal } from "../../components/WeightModal";
+import { UserContext } from "../../contexts/user.context";
 import { RootStackParamList } from "../../routes/app.routes";
-import MenuImage from "./../../assets/menuButton.png";
-import SearchImge from "./../../assets/Search.png";
-import SunriseImage from "./../../assets/Sunrise.png";
-import SunImage from "./../../assets/Sun.png";
+import { THEME } from "../../theme";
+import EditImg from "./../../assets/edit.png";
+import UnfoldWhiteImage from "./../../assets/Group 7 (1).png";
+import UnfoldImage from "./../../assets/Group 7.png";
+import MenuImage from "./../../assets/logo (1).png";
 import MoonImage from "./../../assets/Moon (1).png";
 import PlusImage from "./../../assets/Plus.png";
-import UnfoldImage from "./../../assets/Group 7.png";
-import UnfoldWhiteImage from "./../../assets/Group 7 (1).png";
-import { Ionicons } from "@expo/vector-icons";
-import { THEME } from "../../theme";
+import ConfigImage from "./../../assets/Settings (1).png";
+import SunImage from "./../../assets/Sun.png";
+import SunriseImage from "./../../assets/Sunrise.png";
+import { styles } from "./styles";
+import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 
 function MyCheckbox() {
   const [checked, setChecked] = useState(false);
@@ -41,8 +53,29 @@ function MyCheckbox() {
 
 export const getUserSavedDataOrNull = async () => {
   try {
-    const user = await AsyncStorage.getItem("user");
-    return user ? JSON.parse(user) : null;
+    const userFromStorage = await AsyncStorage.getItem("@user");
+    console.log("User from storage", userFromStorage);
+    if (!userFromStorage) {
+      return null;
+    }
+    const access_token = await AsyncStorage.getItem("@token");
+    const userFromStorageTyped = JSON.parse(
+      userFromStorage
+    ) as userInterfaceType;
+    const userFromDatabase = await api.post(
+      "/me",
+      {
+        email: userFromStorageTyped.email,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    );
+    // save the updated user data to storage
+    await AsyncStorage.setItem("@user", JSON.stringify(userFromDatabase.data));
+    return userFromDatabase.data;
   } catch (e) {
     return null;
   }
@@ -50,7 +83,68 @@ export const getUserSavedDataOrNull = async () => {
 
 type Props = NativeStackScreenProps<RootStackParamList, "Home">;
 
+export function isThisStringSameDayAs(date: string, anotherDate: string) {
+  const dateObj = date.split("T")[0];
+  console.log("Date", dateObj);
+  const today = anotherDate.split("T")[0];
+  console.log("Today", today);
+  console.log("Is same day", dateObj === today);
+  return dateObj === today;
+}
+
+export function foodFrom(foods: foodInterfaceType[], date: string) {
+  return foods.filter((food) => isThisStringSameDayAs(food.time, date));
+}
+
 export function Home({ route, navigation }: Props) {
+  const [date, setDate] = useState(new Date());
+
+  const onChange = (event: any, selectedDate: any) => {
+    const currentDate = selectedDate;
+    setDate(currentDate);
+  };
+
+  const showMode = (currentMode: any) => {
+    DateTimePickerAndroid.open({
+      value: date,
+      onChange,
+      mode: currentMode,
+      is24Hour: true,
+    });
+  };
+
+  const showDatepicker = () => {
+    showMode("date");
+  };
+
+  const navigator = useNavigation();
+
+  const userContext = useContext(UserContext);
+
+  useEffect(() => {
+    getUserSavedDataOrNull();
+  }, []);
+
+  const [weightModalVisible, setWeightModalVisible] = useState<boolean>(false);
+  const [weight, setWeight] = useState<weightInterfaceType>(
+    userContext?.user?.stats?.Weight &&
+      userContext?.user?.stats?.Weight[0] &&
+      isThisStringSameDayAs(
+        userContext?.user?.stats?.Weight[0].time,
+        new Date(date).toISOString()
+      )
+      ? userContext?.user?.stats?.Weight[0]
+      : { id: "", weight: 0, time: "", userId: "" }
+  );
+  console.log("Weight", weight);
+
+  if (
+    userContext === null ||
+    userContext === undefined ||
+    userContext.user === null
+  ) {
+    navigator.navigate("Login");
+  }
   return (
     <Background>
       <SafeAreaView style={styles.container}>
@@ -59,14 +153,71 @@ export function Home({ route, navigation }: Props) {
             style={{
               flexDirection: "row",
               gap: 10,
-              marginBottom: 20,
+              marginVertical: 20,
+              paddingHorizontal: 10,
+              height: 40,
             }}
           >
-            <Image source={MenuImage} />
-            <View style={styles.todayDiv}>
-              <Text style={styles.todayText}>Today</Text>
-            </View>
-            <Image source={SearchImge} />
+            <TouchableOpacity
+              style={{
+                borderWidth: 2,
+                borderColor: "#E89D57",
+                height: 40,
+                width: 40,
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 5,
+              }}
+              onPress={() => {
+                // @ts-ignore
+                navigation.navigate("Chat");
+              }}
+            >
+              <Image
+                style={{
+                  height: 30,
+                  width: 30,
+                  objectFit: "contain",
+                }}
+                source={MenuImage}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                showDatepicker();
+              }}
+              style={styles.todayDiv}
+            >
+              <Text style={styles.todayText}>
+                {isThisStringSameDayAs(
+                  new Date().toISOString(),
+                  date.toISOString()
+                )
+                  ? "Today"
+                  : date.toISOString().split("T")[0]}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{
+                borderWidth: 2,
+                borderColor: "#E89D57",
+                height: 40,
+                width: 40,
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 5,
+              }}
+            >
+              <Image
+                style={{
+                  height: 30,
+                  width: 30,
+                  objectFit: "contain",
+                }}
+                source={ConfigImage}
+              />
+            </TouchableOpacity>
           </View>
           <View
             style={{
@@ -76,56 +227,212 @@ export function Home({ route, navigation }: Props) {
               marginBottom: 25,
             }}
           >
-            <Stat label="Calories" value="0 / 1900" />
-            <Stat label="Protein" value="0 / 85" />
-            <Stat label="Carbs" value="0" />
-            <Stat label="Fat" value="0" />
+            <Stat
+              label="Calories"
+              value={`${userContext?.user?.stats.nutrionValue} / ${userContext?.user?.nutrionValue}`}
+            />
+            <Stat
+              label="Protein"
+              value={`${userContext?.user?.stats.proteinValue} / ${userContext?.user?.proteinValue}`}
+            />
+            <Stat
+              label="Carbs"
+              value={`${userContext?.user?.stats.carbonValue}`}
+            />
+            <Stat
+              label="Sugar"
+              value={`${userContext?.user?.stats.saltValue}`}
+            />
           </View>
           <View style={styles.MealBoxAll}>
             <Meals
               label="Breakfast"
-              value1={0}
-              value2={0}
-              value3={0}
-              value4={0}
+              value1={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).reduce(
+                (acc, food) =>
+                  food.type === "BREAKFAST" ? acc + food.nutrionValue : acc,
+                0
+              )}
+              value2={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).reduce(
+                (acc, food) =>
+                  food.type === "BREAKFAST" ? acc + food.proteinValue : acc,
+                0
+              )}
+              value3={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).reduce(
+                (acc, food) =>
+                  food.type === "BREAKFAST" ? acc + food.carbonValue : acc,
+                0
+              )}
+              value4={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).reduce(
+                (acc, food) =>
+                  food.type === "BREAKFAST" ? acc + food.saltValue : acc,
+                0
+              )}
               img={SunriseImage}
+              foods={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).filter((food) => food.type === "BREAKFAST")}
             />
             <Meals
               label="Lunch"
-              value1={0}
-              value2={0}
-              value3={0}
-              value4={0}
+              foods={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).filter((food) => food.type === "LUNCH")}
+              value1={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).reduce(
+                (acc, food) =>
+                  food.type === "LUNCH" ? acc + food.nutrionValue : acc,
+                0
+              )}
+              value2={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).reduce(
+                (acc, food) =>
+                  food.type === "LUNCH" ? acc + food.proteinValue : acc,
+                0
+              )}
+              value3={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).reduce(
+                (acc, food) =>
+                  food.type === "LUNCH" ? acc + food.carbonValue : acc,
+                0
+              )}
+              value4={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).reduce(
+                (acc, food) =>
+                  food.type === "LUNCH" ? acc + food.saltValue : acc,
+                0
+              )}
               img={SunImage}
             />
             <Meals
               label="Dinner"
-              value1={0}
-              value2={0}
-              value3={0}
-              value4={0}
+              foods={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).filter((food) => food.type === "DINNER")}
+              value1={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).reduce(
+                (acc, food) =>
+                  food.type === "DINNER" ? acc + food.nutrionValue : acc,
+                0
+              )}
+              value2={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).reduce(
+                (acc, food) =>
+                  food.type === "DINNER" ? acc + food.proteinValue : acc,
+                0
+              )}
+              value3={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).reduce(
+                (acc, food) =>
+                  food.type === "DINNER" ? acc + food.carbonValue : acc,
+                0
+              )}
+              value4={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).reduce(
+                (acc, food) =>
+                  food.type === "DINNER" ? acc + food.saltValue : acc,
+                0
+              )}
               img={SunriseImage}
             />
             <Meals
-              label="Other"
-              value1={0}
-              value2={0}
-              value3={0}
-              value4={0}
+              label="Others"
+              foods={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).filter((food) => food.type === "OTHER")}
+              value1={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).reduce(
+                (acc, food) =>
+                  food.type === "OTHER" ? acc + food.nutrionValue : acc,
+                0
+              )}
+              value2={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).reduce(
+                (acc, food) =>
+                  food.type === "OTHER" ? acc + food.proteinValue : acc,
+                0
+              )}
+              value3={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).reduce(
+                (acc, food) =>
+                  food.type === "OTHER" ? acc + food.carbonValue : acc,
+                0
+              )}
+              value4={foodFrom(
+                userContext?.user?.stats.foods || [],
+                new Date(date).toISOString()
+              ).reduce(
+                (acc, food) =>
+                  food.type === "OTHER" ? acc + food.saltValue : acc,
+                0
+              )}
               img={MoonImage}
             />
           </View>
-          <View>
-            <View style={styles.ExtraUp}>
-              <Extra label="Steps" value="14000 / 0" />
-              <Extra label="Weight" img={PlusImage} />
-            </View>
-            <View style={styles.ExtraDown}>
-              <Extra label="Training" img={PlusImage} />
-              <Extra label="Period" check />
-            </View>
-          </View>
           <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
+              gap: 10,
+              paddingHorizontal: 10,
+              marginBottom: 20,
+            }}
+          >
+            <Extra label="Steps" value="14000 / 0" />
+            <Extra
+              doAction={async () => {
+                setWeightModalVisible(true);
+              }}
+              unfoldAction={() => {
+                // @ts-ignore
+                navigation.navigate("Table");
+              }}
+              label="Weight"
+              value={weight.weight != 0 ? weight.weight.toString() : undefined}
+              img={weight.weight != 0 ? EditImg : PlusImage}
+            />
+            <Extra label="Training" img={PlusImage} />
+            <Extra label="Period" check />
+          </View>
+          {/* <View
             style={{
               width: Dimensions.get("screen").width * 0.95,
               borderColor: "#E89D57",
@@ -141,7 +448,15 @@ export function Home({ route, navigation }: Props) {
                 style={styles.UnfoldWhiteImage}
               />
             </View>
-          </View>
+          </View> */}
+          <WeightModal
+            handleClose={() => {
+              setWeightModalVisible(false);
+            }}
+            visible={weightModalVisible}
+            formData={weight}
+            setFormData={setWeight}
+          />
         </ScrollView>
       </SafeAreaView>
     </Background>
@@ -180,9 +495,21 @@ interface MealsBox {
   value3: number;
   value4: number;
   img: ImageSourcePropType;
+  foods: foodInterfaceType[];
 }
 
-function Meals({ label, value1, value2, value3, value4, img }: MealsBox) {
+function Meals({
+  foods,
+  label,
+  value1,
+  value2,
+  value3,
+  value4,
+  img,
+}: MealsBox) {
+  const navigation = useNavigation();
+  const [unfold, setUnfold] = useState<boolean>(false);
+
   return (
     <View
       style={{
@@ -193,9 +520,60 @@ function Meals({ label, value1, value2, value3, value4, img }: MealsBox) {
       }}
     >
       <View style={styles.Meals}>
-        <Image source={img} style={styles.SunriseImage} />
-        <Text style={styles.boxText}>{label}</Text>
-        <Image source={PlusImage} style={styles.PlusImage} />
+        <View style={styles.MealsRow}>
+          <Image source={img} style={styles.SunriseImage} />
+          <Text style={styles.boxText}>{label}</Text>
+        </View>
+        <View style={styles.MealsRow}>
+          {foods.length > 0 && (
+            <TouchableOpacity
+              onPress={() => {
+                setUnfold(!unfold);
+              }}
+              style={styles.PlusImage}
+            >
+              <Image
+                source={UnfoldWhiteImage}
+                style={{
+                  objectFit: "contain",
+                }}
+              />
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity
+            onPress={() => {
+              let foodType: "BREAKFAST" | "LUNCH" | "DINNER" | "OTHER" =
+                "BREAKFAST";
+              switch (label) {
+                case "Breakfast":
+                  foodType = "BREAKFAST";
+                  break;
+                case "Lunch":
+                  foodType = "LUNCH";
+                  break;
+                case "Dinner":
+                  foodType = "DINNER";
+                  break;
+                case "Others":
+                  foodType = "OTHER";
+                  break;
+                default:
+                  foodType = "BREAKFAST";
+              }
+              navigation.navigate("UploadCalories", {
+                foodType,
+              });
+            }}
+            style={styles.PlusImage}
+          >
+            <Image
+              source={PlusImage}
+              style={{
+                objectFit: "contain",
+              }}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={styles.MealBoxIndex}>
         <Text style={styles.MealBoxText}>{value1}</Text>
@@ -203,6 +581,40 @@ function Meals({ label, value1, value2, value3, value4, img }: MealsBox) {
         <Text style={styles.MealBoxText}>{value3}</Text>
         <Text style={styles.MealBoxText}>{value4}</Text>
       </View>
+      {unfold && (
+        <View>
+          {foods.map((food: foodInterfaceType, index: number) => (
+            <>
+              <View
+                style={{
+                  borderTopColor: "#E89D57",
+                  borderTopWidth: 2,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  paddingVertical: 5,
+                  paddingHorizontal: 10,
+                }}
+              >
+                <Text>{food.name}</Text>
+                <Text>XYZg</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  paddingVertical: 2,
+                  paddingHorizontal: 10,
+                }}
+              >
+                <Text>{food.nutrionValue}</Text>
+                <Text>{food.proteinValue}</Text>
+                <Text>{food.carbonValue}</Text>
+                <Text>{food.sugarValue}</Text>
+              </View>
+            </>
+          ))}
+        </View>
+      )}
     </View>
   );
 }
@@ -212,9 +624,11 @@ interface ExtraBox {
   value?: string;
   img?: ImageSourcePropType;
   check?: boolean;
+  doAction?: () => Promise<void>;
+  unfoldAction?: () => void;
 }
 
-function Extra({ label, value, img, check }: ExtraBox) {
+function Extra({ label, value, img, check, doAction, unfoldAction }: ExtraBox) {
   const [checkPeriod, setCheckPeriod] = useState<boolean>(false);
 
   const handleClickCheckPeriod = () => {
@@ -231,11 +645,37 @@ function Extra({ label, value, img, check }: ExtraBox) {
     >
       <View style={styles.StepsUp}>
         <Text style={styles.StepsUpText}>{label}</Text>
-        <Image source={UnfoldImage} style={styles.UnfoldImage} />
+        <TouchableOpacity
+          onPress={() => {
+            if (unfoldAction) {
+              unfoldAction();
+            }
+          }}
+        >
+          <Image source={UnfoldImage} style={styles.UnfoldImage} />
+        </TouchableOpacity>
       </View>
       <View style={styles.StepsDown}>
         {value && <Text style={styles.boxText}>{value}</Text>}
-        {img && <Image source={img} style={styles.PlusImage2} />}
+        {img && (
+          <TouchableOpacity
+            style={styles.PlusImage2}
+            onPress={() => {
+              if (doAction) {
+                doAction();
+              }
+            }}
+          >
+            <Image
+              source={img}
+              style={{
+                objectFit: "contain",
+                height: "100%",
+                width: "100%",
+              }}
+            />
+          </TouchableOpacity>
+        )}
         {check && <MyCheckbox />}
       </View>
     </View>

@@ -1,102 +1,49 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-
-import { Home } from "../screens/Home";
-import { THEME } from "../theme";
-import { UploadCalories } from "../screens/UploadCalories";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useContext } from "react";
+import { UserContext } from "../contexts/user.context";
 import { Login, Register } from "../screens/Auth";
+import { Home } from "../screens/Home";
+import { UploadCalories } from "../screens/UploadCalories";
+import { Table } from "../screens/Table";
+import { useNavigation } from "@react-navigation/native";
+import { Chat } from "../screens/Chat";
 
 interface HomeProps {}
-interface UploadCaloriesProps {}
+interface UploadCaloriesProps {
+  foodType: "BREAKFAST" | "LUNCH" | "DINNER" | "OTHER";
+}
 interface LoginProps {}
 interface RegisterProps {}
+interface TableProps {}
+interface ChatProps {}
 
 export type RootStackParamList = {
   Home: HomeProps;
   UploadCalories: UploadCaloriesProps;
   Login: LoginProps;
   Register: RegisterProps;
+  Table: TableProps;
+  Chat: ChatProps;
 };
 
-const { Navigator, Screen } = createBottomTabNavigator<RootStackParamList>();
+const { Navigator, Screen } = createNativeStackNavigator<RootStackParamList>();
 
 export function AppRoutes() {
+  const userContext = useContext(UserContext);
+
   return (
     <Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: {
-          borderTopColor: THEME.COLORS.SHAPE,
-          borderTopWidth: 3,
-        },
       }}
-      initialRouteName={/* user !== null ? "home" : */ "Home"}
-      backBehavior="none"
+      initialRouteName={userContext?.user ? "Home" : "Login"}
     >
-      <Screen
-        options={{
-          tabBarButton: () => null,
-          tabBarActiveTintColor: THEME.COLORS.WHITE_TEXT,
-          tabBarInactiveTintColor: THEME.COLORS.ALERT,
-          tabBarStyle: {
-            display: "none",
-          },
-        }}
-        name="Login"
-        component={Login}
-      />
-      <Screen
-        options={{
-          tabBarButton: () => null,
-          tabBarActiveTintColor: THEME.COLORS.WHITE_TEXT,
-          tabBarInactiveTintColor: THEME.COLORS.ALERT,
-          tabBarStyle: {
-            display: "none",
-          },
-        }}
-        name="Register"
-        component={Register}
-      />
-      <Screen
-        options={{
-          tabBarLabel: "Home",
-          tabBarActiveTintColor: THEME.COLORS.WHITE_TEXT,
-          tabBarInactiveTintColor: THEME.COLORS.ALERT,
-          tabBarLabelStyle: {
-            color: THEME.COLORS.TEXT,
-            fontSize: THEME.FONT_SIZE.SM,
-          },
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="home"
-              color={THEME.COLORS.SHAPE}
-              size={size}
-            />
-          ),
-        }}
-        name="Home"
-        component={Home}
-      />
-      <Screen
-        options={{
-          tabBarLabel: "Eat",
-          tabBarActiveTintColor: THEME.COLORS.WHITE_TEXT,
-          tabBarInactiveTintColor: THEME.COLORS.ALERT,
-          tabBarLabelStyle: {
-            color: THEME.COLORS.TEXT,
-            fontSize: THEME.FONT_SIZE.SM,
-          },
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="food"
-              color={THEME.COLORS.SHAPE}
-              size={size}
-            />
-          ),
-        }}
-        name="UploadCalories"
-        component={UploadCalories}
-      />
+      <Screen name="Login" component={Login} />
+      <Screen name="Register" component={Register} />
+      <Screen name="Home" component={Home} />
+      <Screen name="UploadCalories" component={UploadCalories} />
+      <Screen name="Table" component={Table} />
+      <Screen name="Chat" component={Chat} />
     </Navigator>
   );
 }

@@ -17,12 +17,13 @@ import CloseIcon from "../../assets/icons/SlideDownArrow.png";
 import { UserContext } from "../../contexts/user.context";
 import { SuccessContext } from "../../contexts/success.context";
 import { ErrorContext } from "../../contexts/error.context";
-import { caloriesPostResponse } from "../../api";
+import { api, caloriesPostResponse } from "../../api";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface Props extends ModalProps {
   handleClose: () => void;
   formData: caloriesPostResponse;
+  foodType: "BREAKFAST" | "LUNCH" | "DINNER" | "OTHER";
   setFormData: (data: caloriesPostResponse) => void;
 }
 
@@ -75,6 +76,7 @@ export function CaloriesModal({
   handleClose,
   formData,
   setFormData,
+  foodType,
   ...rest
 }: Props) {
   const { successMessage, setSuccessMessage } = useContext(SuccessContext);
@@ -85,6 +87,16 @@ export function CaloriesModal({
   const [tests, setTests] = useState(1);
 
   const FORM_BUILDER_MAPPER = [
+    {
+      label: "Name",
+      name: "name",
+      input: {
+        value: formData?.name,
+        onChangeText: (text: string) =>
+          setFormData({ ...formData, name: text }),
+        placeholder: "Enter the name of the food",
+      },
+    },
     {
       label: "Nutrition Value",
       name: "nutrionValue",
@@ -210,7 +222,41 @@ export function CaloriesModal({
             {tests === 0 ? (
               <ActivityIndicator color={THEME.COLORS.WHITE_TEXT} />
             ) : (
-              <TouchableOpacity onPress={() => {}} style={styles.okButton}>
+              <TouchableOpacity
+                onPress={() => {
+                  for (const key in formData) {
+                    console.log(key);
+                    // @ts-ignore
+                    if (formData[key] === null || formData[key] === "") {
+                      setErrorMessage("Please fill all the fields");
+                      return;
+                    }
+                  }
+                  console.log("Form data", formData);
+                  api
+                    .post("/eat", {
+                      type: foodType,
+                      name: formData.name,
+                      photo: formData.photo,
+                      nutrionValue: formData.nutrionValue,
+                      energyValue: formData.energyValue,
+                      carbonValue: formData.carbonValue,
+                      sugarValue: formData.sugarValue,
+                      proteinValue: formData.proteinValue,
+                      saltValue: formData.saltValue,
+                    })
+                    .then((res) => {
+                      console.log(res.data);
+                      setSuccessMessage("Food added successfully");
+                      handleClose();
+                    })
+                    .catch((error) => {
+                      console.error(error);
+                      setErrorMessage("An error occurred");
+                    });
+                }}
+                style={styles.okButton}
+              >
                 <Text style={styles.okText}>Eat! 🍗</Text>
               </TouchableOpacity>
             )}

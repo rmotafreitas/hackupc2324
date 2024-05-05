@@ -4,6 +4,10 @@ export declare global {
       Home: undefined;
       Register: undefined;
       Login: undefined;
+      UploadCalories: {
+        foodType: "BREAKFAST" | "LUNCH" | "DINNER" | "OTHER";
+      };
+      Chat: undefined;
     }
   }
 }

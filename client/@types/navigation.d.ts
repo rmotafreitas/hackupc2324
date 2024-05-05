@@ -1,7 +1,13 @@
 export declare global {
   namespace ReactNavigation {
     interface RootParamList {
-      home: undefined;
+      Home: undefined;
+      UploadCalories: {
+        foodType: "BREAKFAST" | "LUNCH" | "DINNER" | "OTHER";
+      };
+      Login: undefined;
+      Register: undefined;
+      Table: undefined;
     }
   }
 }

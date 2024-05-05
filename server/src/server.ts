@@ -9,6 +9,12 @@ import { updateUser } from "./routes/user/update.ts";
 // JWT SETUP
 import fjwt, { FastifyJWT } from "@fastify/jwt";
 import fCookie from "@fastify/cookie";
+import { eat } from "./routes/user/eat.ts";
+import { postWeight } from "./routes/user/measureWeight.ts";
+import { getAIChatRoute } from "./routes/chat/chat.ts";
+import { getAIChatSaveRoute } from "./routes/chat/chat-save.ts";
+import { getAIChatCompleteRoute } from "./routes/chat/chat-completition.ts";
+import { deleteAIChatRoute } from "./routes/chat/chat-delete.ts";
 
 const host = "RENDER" in process.env ? `0.0.0.0` : `localhost`;
 
@@ -51,6 +57,12 @@ app.get("/ping", async (request, reply) => {
 
 app.register(postAndGetImageInformation);
 app.register(updateUser);
+app.register(eat);
+app.register(postWeight);
+app.register(getAIChatRoute);
+app.register(getAIChatSaveRoute);
+app.register(getAIChatCompleteRoute);
+app.register(deleteAIChatRoute);
 
 app.register(fastifystatic, {
   root: path.join(__dirname, "..", "tmp"),

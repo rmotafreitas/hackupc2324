@@ -19,8 +19,6 @@ export const getUserSavedDataOrNull = async () => {
   }
 };
 
-type Props = NativeStackScreenProps<RootStackParamList, "UploadCalories">;
-
 const createFileImageObject = (file: string) => {
   let uriParts = file.split(".");
   let fileType = uriParts[uriParts.length - 1];
@@ -31,7 +29,10 @@ const createFileImageObject = (file: string) => {
   };
 };
 
+type Props = NativeStackScreenProps<RootStackParamList, "UploadCalories">;
 export function UploadCalories({ route, navigation }: Props) {
+  console.log("Props", route.params);
+
   const [image, setImage] = useState<string | null>(null);
   const [isCaloriesModalVisible, setIsCaloriesModalVisible] = useState(false);
 
@@ -62,6 +63,8 @@ export function UploadCalories({ route, navigation }: Props) {
       let calories: caloriesPostResponse = res.data;
       if (!calories) {
         calories = {
+          name: "",
+          photo: "",
           nutrionValue: 0,
           energyValue: 0,
           carbonValue: 0,
@@ -72,7 +75,7 @@ export function UploadCalories({ route, navigation }: Props) {
       }
       setFormData(calories);
       setIsCaloriesModalVisible(true);
-      console.log(calories.carbonValue);
+      console.log(calories);
     }
   };
 
@@ -92,6 +95,7 @@ export function UploadCalories({ route, navigation }: Props) {
               <Image source={{ uri: image }} style={styles.foodImage} />
             )}
             <CaloriesModal
+              foodType={route.params.foodType}
               visible={isCaloriesModalVisible}
               handleClose={() => {
                 setIsCaloriesModalVisible(false);

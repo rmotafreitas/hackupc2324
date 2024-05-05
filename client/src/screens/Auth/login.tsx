@@ -1,5 +1,11 @@
 import React, { useContext, useState } from "react";
-import { SafeAreaView, Text, View, ScrollView } from "react-native";
+import {
+  SafeAreaView,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
 import { api } from "../../api";
@@ -28,23 +34,22 @@ export function Login() {
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState("");
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   const userContext = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleLogin() {
     setIsLoading(true);
-    const res = await api.post("/users/login", {
-      email,
-      password,
+    const res = await api.post("/me", {
+      email: formData.email,
+      password: formData.password,
     });
+    console.log(res.data);
     if (res.data.error) {
       setError(res.data.error);
       setIsError(true);
     } else {
       await AsyncStorage.setItem("@user", JSON.stringify(res.data));
+      await AsyncStorage.setItem("@token", res.data.access_token);
       userContext?.setUser(res.data);
       goToHome();
     }
@@ -107,6 +112,26 @@ export function Login() {
               />
             </View>
           ))}
+          <TouchableOpacity
+            style={{
+              backgroundColor: THEME.COLORS.PRIMARY,
+              padding: 10,
+              borderRadius: 5,
+              width: "85%",
+              alignItems: "center",
+              marginTop: 20,
+            }}
+            onPress={handleLogin}
+          >
+            <Text
+              style={{
+                color: THEME.COLORS.WHITE_TEXT,
+                fontFamily: THEME.FONT_FAMILY.SEMI_BOLD,
+              }}
+            >
+              Login
+            </Text>
+          </TouchableOpacity>
           <View style={styles.center}>
             <Reference
               fn={goToRegisterScreen}

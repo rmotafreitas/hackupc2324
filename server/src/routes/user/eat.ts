@@ -4,7 +4,7 @@ import { promisify } from "node:util";
 import { z } from "zod";
 import { prisma } from "../../lib/prisma";
 
-export const postAndGetImageInformation = async (app: FastifyInstance) => {
+export const eat = async (app: FastifyInstance) => {
   app.post(
     "/eat",
     {
@@ -94,12 +94,16 @@ export const getUserStats = async (user: { email: string }) => {
     },
     include: {
       foods: {
-        where: {
-          time: new Date().toISOString(),
+        where: {},
+      },
+      Weight: {
+        orderBy: {
+          time: "desc",
         },
       },
     },
   });
+  console.log("User", userObject);
 
   const newStats = {
     nutrionValue: 0,
@@ -107,25 +111,30 @@ export const getUserStats = async (user: { email: string }) => {
     sugarValue: 0,
     proteinValue: 0,
     saltValue: 0,
+    ...userObject,
   };
 
   userObject?.foods.forEach((food) => {
-    newStats.nutrionValue += food.nutrionValue;
-    newStats.carbonValue += food.carbonValue;
-    newStats.sugarValue += food.sugarValue;
-    newStats.proteinValue += food.proteinValue;
-    newStats.saltValue += food.saltValue;
+    console.log("Food", food);
+    // check if food is from today
+    const date = new Date(food.time);
+    const today = new Date();
+    if (
+      date.getDate() === today.getDate() ||
+      date.getMonth() === today.getMonth() ||
+      date.getFullYear() === today.getFullYear()
+    ) {
+      newStats.nutrionValue += food.nutrionValue;
+      newStats.carbonValue += food.carbonValue;
+      newStats.sugarValue += food.sugarValue;
+      newStats.proteinValue += food.proteinValue;
+      newStats.saltValue += food.saltValue;
+    }
   });
 
   if (!userObject) {
     return newStats;
   }
-
-  newStats.nutrionValue = userObject?.nutrionValue - newStats.nutrionValue;
-  newStats.carbonValue = userObject?.carbonValue - newStats.carbonValue;
-  newStats.sugarValue = userObject?.sugarValue - newStats.sugarValue;
-  newStats.proteinValue = userObject?.proteinValue - newStats.proteinValue;
-  newStats.saltValue = userObject?.saltValue - newStats.saltValue;
 
   return newStats;
 };

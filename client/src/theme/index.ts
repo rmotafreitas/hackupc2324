@@ -10,7 +10,7 @@ export const THEME = {
 
     SHAPE: "#88CCF1",
 
-    PRIMARY: "#3587A4",
+    PRIMARY: "#E89D57",
     COVER: "#2D848A",
     SUCCESS: "#00FF00",
     ALERT: "#FF0000",

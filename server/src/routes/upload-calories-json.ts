@@ -122,6 +122,7 @@ Parsed food package back text:
       }
 
       const json = JSON.parse(message);
+      json.photo = fileUploadName;
 
       return reply.send(json);
     }

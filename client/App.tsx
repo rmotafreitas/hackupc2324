@@ -4,7 +4,7 @@ import { Background } from "./src/components/Background";
 import { useEffect, useMemo, useState } from "react";
 import { ErrorContext } from "./src/contexts/error.context";
 import { SuccessContext } from "./src/contexts/success.context";
-import { DiscordUser, UserContext } from "./src/contexts/user.context";
+import { UserContext } from "./src/contexts/user.context";
 import { Routes } from "./src/routes";
 import { Loading } from "./src/screens/Loading";
 import { THEME } from "./src/theme";
@@ -16,6 +16,9 @@ import {
   Inter_700Bold,
   Inter_900Black,
 } from "@expo-google-fonts/inter";
+import { userInterfaceType } from "./src/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getUserSavedDataOrNull } from "./src/screens/Home";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -27,7 +30,7 @@ export default function App() {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const [user, setUser] = useState<DiscordUser | null>(null);
+  const [user, setUser] = useState<userInterfaceType | null>(null);
 
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -46,8 +49,11 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
-      console.log("App mounted");
-      setIsLoading(false);
+      getUserSavedDataOrNull().then((user) => {
+        console.log("User from storage", user);
+        setUser(user);
+        setIsLoading(false);
+      });
     })();
     return () => {
       console.log("App unmounted");

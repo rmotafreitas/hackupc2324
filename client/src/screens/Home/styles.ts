@@ -15,27 +15,27 @@ export const styles = StyleSheet.create({
     fontFamily: THEME.FONT_FAMILY.BLACK,
     fontSize: THEME.FONT_SIZE.LG,
   },
-  todayDiv:{
-    width: 280,
+  todayDiv: {
     height: 40,
+    flex: 1,
     borderColor: "#E89D57",
     borderWidth: 2,
     borderRadius: 5,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
-  todayText:{
-   fontSize: THEME.FONT_SIZE.LG,
-   fontFamily: THEME.FONT_FAMILY.BOLD,
-   color: "#1B4F33"
+  todayText: {
+    fontSize: THEME.FONT_SIZE.LG,
+    fontFamily: THEME.FONT_FAMILY.BOLD,
+    color: "#1B4F33",
   },
-  CaloriesUp:{
+  CaloriesUp: {
     backgroundColor: "#E89D57",
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
   },
-  boxText:{
+  boxText: {
     fontSize: THEME.FONT_SIZE.SM,
     fontFamily: THEME.FONT_FAMILY.BOLD,
     color: "#1B4F33",
@@ -45,7 +45,7 @@ export const styles = StyleSheet.create({
     marginVertical: 3,
     width: "100%",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   Meals: {
     fontSize: THEME.FONT_SIZE.SM,
@@ -53,45 +53,50 @@ export const styles = StyleSheet.create({
     color: "#1B4F33",
     backgroundColor: "#E89D57",
     width: "100%",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+  },
+  MealsRow: {
+    flexDirection: "row",
+    gap: 5,
     justifyContent: "flex-start",
     alignItems: "center",
-    flexDirection: "row"
   },
   SunriseImage: {
-    width: "5%",
     objectFit: "contain",
     marginRight: 5,
-    marginLeft: 5
   },
   PlusImage: {
-   alignSelf: "flex-end",
-   marginLeft: "auto",
-   width: "4%",
-   objectFit: "contain",
-   marginRight: 5
+    justifyContent: "center",
+    alignItems: "center",
+    borderColor: "#E89D57",
+    borderWidth: 2,
   },
   MealBoxText: {
     fontSize: THEME.FONT_SIZE.SM,
     fontFamily: THEME.FONT_FAMILY.BOLD,
-    color: THEME.COLORS.TEXT
-    },
-  MealBoxIndex:{
+    color: THEME.COLORS.TEXT,
+  },
+  MealBoxIndex: {
     fontSize: THEME.FONT_SIZE.SM,
     fontFamily: THEME.FONT_FAMILY.BOLD,
     color: "#1B4F33",
     paddingVertical: 3,
     flexDirection: "row",
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
-  MealBoxAll:{
+  MealBoxAll: {
     flexDirection: "column",
     gap: 15,
-    marginBottom: 25
+    marginBottom: 25,
   },
   StepsUp: {
     marginVertical: 3,
     marginHorizontal: 5,
-    width: 160,
+    width: 150,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
@@ -101,6 +106,8 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     height: 25,
+    flexDirection: "row",
+    gap: 5,
   },
   StepsUpText: {
     fontSize: THEME.FONT_SIZE.SM,
@@ -120,34 +127,34 @@ export const styles = StyleSheet.create({
   ExtraUp: {
     flexDirection: "row",
     gap: 20,
-    marginBottom: 15
+    marginBottom: 15,
   },
   ExtraDown: {
     flexDirection: "row",
     gap: 20,
-    marginBottom: 20
+    marginBottom: 20,
   },
   PlusImage2: {
     width: "10%",
-    objectFit: "contain"
+    objectFit: "contain",
   },
   checkboxBase: {
     width: 20,
     height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 4,
     borderWidth: 2,
-    borderColor: 'white',
-    backgroundColor: 'white',
+    borderColor: "white",
+    backgroundColor: "white",
   },
   checkboxChecked: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: "center"
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   UnfoldWhiteImage: {
     alignSelf: "flex-end",
@@ -165,16 +172,16 @@ export const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     flexDirection: "row",
-    height: "25%"
+    height: "25%",
   },
   ProgressText: {
     fontSize: THEME.FONT_SIZE.SM,
     fontFamily: THEME.FONT_FAMILY.BOLD,
     color: THEME.COLORS.TEXT,
     marginLeft: 50,
-    flex: 1
+    flex: 1,
   },
-  ProgressDate:{
+  ProgressDate: {
     fontSize: THEME.FONT_SIZE.SM,
     fontFamily: THEME.FONT_FAMILY.BOLD,
     color: THEME.COLORS.TEXT,
@@ -183,6 +190,5 @@ export const styles = StyleSheet.create({
     objectFit: "contain",
     marginRight: 30,
     marginBottom: 10,
-  }
-
+  },
 });

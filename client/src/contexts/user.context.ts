@@ -1,19 +1,9 @@
-export interface DiscordUser {
-  avatar: string;
-  avatar_url: string;
-  id: string;
-  mfa: boolean;
-  username: string;
-  nickname: string;
-  avatar_decoration_data: any;
-  PHPSESSID: string;
-}
-
 import { createContext } from "react";
+import { userInterfaceType } from "../api";
 
 export interface UserContextProps {
-  user: DiscordUser | null;
-  setUser: (user: DiscordUser | null) => void;
+  user: userInterfaceType | null;
+  setUser: (user: userInterfaceType | null) => void;
 }
 
 export const UserContext: React.Context<UserContextProps | null> =
