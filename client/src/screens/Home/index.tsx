@@ -1,8 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -97,6 +97,16 @@ export function foodFrom(foods: foodInterfaceType[], date: string) {
 }
 
 export function Home({ route, navigation }: Props) {
+  useFocusEffect(
+    useCallback(() => {
+      getUserSavedDataOrNull().then((user) => {
+        if (user) {
+          userContext?.setUser(user);
+        }
+      });
+    }, [route])
+  );
+
   const [date, setDate] = useState(new Date());
 
   const onChange = (event: any, selectedDate: any) => {
@@ -126,17 +136,6 @@ export function Home({ route, navigation }: Props) {
   }, []);
 
   const [weightModalVisible, setWeightModalVisible] = useState<boolean>(false);
-  const [weight, setWeight] = useState<weightInterfaceType>(
-    userContext?.user?.stats?.Weight &&
-      userContext?.user?.stats?.Weight[0] &&
-      isThisStringSameDayAs(
-        userContext?.user?.stats?.Weight[0].time,
-        new Date(date).toISOString()
-      )
-      ? userContext?.user?.stats?.Weight[0]
-      : { id: "", weight: 0, time: "", userId: "" }
-  );
-  console.log("Weight", weight);
 
   if (
     userContext === null ||
@@ -175,6 +174,17 @@ export function Home({ route, navigation }: Props) {
     userContext?.user?.stats.foods || [],
     new Date(date).toISOString()
   );
+
+  const [weight, setWeight] = useState<number>(0);
+
+  useEffect(() => {
+    const weightAux = userContext?.user?.stats.Weight.find((weight) =>
+      isThisStringSameDayAs(weight.time, new Date(date).toISOString())
+    )?.weight;
+    if (weightAux) {
+      setWeight(weightAux);
+    }
+  }, [date]);
 
   return (
     <Background>
@@ -451,8 +461,8 @@ export function Home({ route, navigation }: Props) {
                 navigation.navigate("Table");
               }}
               label="Weight"
-              value={weight.weight != 0 ? weight.weight.toString() : undefined}
-              img={weight.weight != 0 ? EditImg : PlusImage}
+              value={weight ? `${weight} kg` : "0 kg"}
+              img={weight != 0 ? EditImg : PlusImage}
             />
             <Extra label="Training" img={PlusImage} />
             <Extra label="Period" check />
@@ -479,8 +489,8 @@ export function Home({ route, navigation }: Props) {
               setWeightModalVisible(false);
             }}
             visible={weightModalVisible}
-            formData={weight}
-            setFormData={setWeight}
+            weight={weight || 0}
+            date={new Date(date).toISOString()}
           />
         </ScrollView>
       </SafeAreaView>
