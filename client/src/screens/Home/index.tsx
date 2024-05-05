@@ -145,6 +145,37 @@ export function Home({ route, navigation }: Props) {
   ) {
     navigator.navigate("Login");
   }
+
+  const calcNutrionValue = (foods: foodInterfaceType[]) => {
+    return foods.reduce((acc, food) => acc + food.nutrionValue, 0);
+  };
+
+  const calcProteinValue = (foods: foodInterfaceType[]) => {
+    return foods.reduce((acc, food) => acc + food.proteinValue, 0);
+  };
+
+  const calcCarbonValue = (foods: foodInterfaceType[]) => {
+    return foods.reduce((acc, food) => acc + food.carbonValue, 0);
+  };
+
+  const calcSaltValue = (foods: foodInterfaceType[]) => {
+    return foods.reduce((acc, food) => acc + food.saltValue, 0);
+  };
+
+  const calcStatusForADay = (foods: foodInterfaceType[], date: string) => {
+    return {
+      nutrionValue: calcNutrionValue(foodFrom(foods, date)),
+      proteinValue: calcProteinValue(foodFrom(foods, date)),
+      carbonValue: calcCarbonValue(foodFrom(foods, date)),
+      saltValue: calcSaltValue(foodFrom(foods, date)),
+    };
+  };
+
+  const status = calcStatusForADay(
+    userContext?.user?.stats.foods || [],
+    new Date(date).toISOString()
+  );
+
   return (
     <Background>
       <SafeAreaView style={styles.container}>
@@ -229,20 +260,14 @@ export function Home({ route, navigation }: Props) {
           >
             <Stat
               label="Calories"
-              value={`${userContext?.user?.stats.nutrionValue} / ${userContext?.user?.nutrionValue}`}
+              value={`${status.nutrionValue} / ${userContext?.user?.nutrionValue}`}
             />
             <Stat
               label="Protein"
-              value={`${userContext?.user?.stats.proteinValue} / ${userContext?.user?.proteinValue}`}
+              value={`${status.proteinValue} / ${userContext?.user?.proteinValue}`}
             />
-            <Stat
-              label="Carbs"
-              value={`${userContext?.user?.stats.carbonValue}`}
-            />
-            <Stat
-              label="Sugar"
-              value={`${userContext?.user?.stats.saltValue}`}
-            />
+            <Stat label="Carbs" value={`${status.carbonValue}`} />
+            <Stat label="Sugar" value={`${status.saltValue}`} />
           </View>
           <View style={styles.MealBoxAll}>
             <Meals
