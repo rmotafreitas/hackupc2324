@@ -213,14 +213,14 @@ export function ChatBubble({
     >
       <View
         style={{
-          backgroundColor: isLeft ? THEME.COLORS.ALERT : THEME.COLORS.PRIMARY,
+          backgroundColor: isLeft ? "gray" : THEME.COLORS.PRIMARY,
           padding: 10,
           borderRadius: 10,
         }}
       >
         <Text
           style={{
-            color: THEME.COLORS.TEXT,
+            color: isLeft ? THEME.COLORS.WHITE_TEXT : THEME.COLORS.TEXT,
             fontFamily: THEME.FONT_FAMILY.BOLD,
           }}
         >
