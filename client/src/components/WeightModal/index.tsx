@@ -143,14 +143,12 @@ export function WeightModal({ handleClose, weight, date, ...rest }: Props) {
                     setErrorMessage("Please fill all the fields");
                     return;
                   }
-                  console.log("Form data", formData);
                   api
                     .post("/weight", {
                       weight: formData,
                       date: date,
                     })
                     .then((res) => {
-                      console.log(res.data);
                       setSuccessMessage("Weight added successfully");
                       handleClose();
                     })

@@ -43,7 +43,6 @@ export function Login() {
       email: formData.email,
       password: formData.password,
     });
-    console.log(res.data);
     if (res.data.error) {
       setError(res.data.error);
       setIsError(true);

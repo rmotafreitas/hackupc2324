@@ -54,7 +54,6 @@ function MyCheckbox() {
 export const getUserSavedDataOrNull = async () => {
   try {
     const userFromStorage = await AsyncStorage.getItem("@user");
-    console.log("User from storage", userFromStorage);
     if (!userFromStorage) {
       return null;
     }
@@ -85,10 +84,7 @@ type Props = NativeStackScreenProps<RootStackParamList, "Home">;
 
 export function isThisStringSameDayAs(date: string, anotherDate: string) {
   const dateObj = date.split("T")[0];
-  console.log("Date", dateObj);
   const today = anotherDate.split("T")[0];
-  console.log("Today", today);
-  console.log("Is same day", dateObj === today);
   return dateObj === today;
 }
 
@@ -178,11 +174,15 @@ export function Home({ route, navigation }: Props) {
   const [weight, setWeight] = useState<number>(0);
 
   useEffect(() => {
-    const weightAux = userContext?.user?.stats.Weight.find((weight) =>
-      isThisStringSameDayAs(weight.time, new Date(date).toISOString())
-    )?.weight;
+    const weightAux = userContext?.user?.stats.Weight.find((weight) => {
+      console.log(weight.time, new Date(date).toISOString());
+      return isThisStringSameDayAs(weight.time, new Date(date).toISOString());
+    })?.weight;
+    console.log(weightAux);
     if (weightAux) {
       setWeight(weightAux);
+    } else {
+      setWeight(0);
     }
   }, [date]);
 

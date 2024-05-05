@@ -24,7 +24,6 @@ import UnfoldWhite from "../../assets/Group 7 (1).png";
 export const getUserSavedDataOrNull = async () => {
   try {
     const userFromStorage = await AsyncStorage.getItem("@user");
-    console.log("User from storage", userFromStorage);
     if (!userFromStorage) {
       return null;
     }
@@ -149,9 +148,6 @@ export function Table({ route, navigation }: Props) {
             <FlatList
               data={userContext?.user?.stats.Weight}
               renderItem={({ item, index }) => {
-                console.log("Item", item);
-                console.log("Index", index);
-                console.log("Array of changes", arrayOfChanges);
                 const isHigherThanPrevious =
                   arrayOfChanges && arrayOfChanges[index] > 0;
                 const isLastIndex =

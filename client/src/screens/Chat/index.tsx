@@ -35,7 +35,6 @@ export function Chat({ route, navigation }: Props) {
           setToken(t);
         }
         api.get("/ai/chat").then((response) => {
-          console.log(response.data);
           for (let i = response.data.length - 1; i >= 0; i--) {
             setMessages((old) => [...old, response.data[i].message]);
             setMessages((old) => [...old, response.data[i].chatGPT]);

@@ -50,13 +50,10 @@ export default function App() {
   useEffect(() => {
     (async () => {
       getUserSavedDataOrNull().then((user) => {
-        console.log("User from storage", user);
         setUser(user);
-        setIsLoading(false);
       });
     })();
     return () => {
-      console.log("App unmounted");
       try {
       } catch (err) {
         console.log(err);

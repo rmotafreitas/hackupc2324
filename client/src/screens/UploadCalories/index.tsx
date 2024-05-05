@@ -31,8 +31,6 @@ const createFileImageObject = (file: string) => {
 
 type Props = NativeStackScreenProps<RootStackParamList, "UploadCalories">;
 export function UploadCalories({ route, navigation }: Props) {
-  console.log("Props", route.params);
-
   const [image, setImage] = useState<string | null>(null);
   const [isCaloriesModalVisible, setIsCaloriesModalVisible] = useState(false);
 
@@ -75,7 +73,6 @@ export function UploadCalories({ route, navigation }: Props) {
       }
       setFormData(calories);
       setIsCaloriesModalVisible(true);
-      console.log(calories);
     }
   };
 

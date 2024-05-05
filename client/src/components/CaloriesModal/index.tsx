@@ -172,8 +172,6 @@ export function CaloriesModal({
     },
   ];
 
-  console.log(formData);
-
   return (
     <Modal animationType="slide" statusBarTranslucent transparent {...rest}>
       <KeyboardAvoidingView behavior="padding" style={styles.container}>
@@ -225,14 +223,12 @@ export function CaloriesModal({
               <TouchableOpacity
                 onPress={() => {
                   for (const key in formData) {
-                    console.log(key);
                     // @ts-ignore
                     if (formData[key] === null || formData[key] === "") {
                       setErrorMessage("Please fill all the fields");
                       return;
                     }
                   }
-                  console.log("Form data", formData);
                   api
                     .post("/eat", {
                       type: foodType,
@@ -246,7 +242,6 @@ export function CaloriesModal({
                       saltValue: formData.saltValue,
                     })
                     .then((res) => {
-                      console.log(res.data);
                       setSuccessMessage("Food added successfully");
                       handleClose();
                     })
