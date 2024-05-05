@@ -51,6 +51,7 @@ export default function App() {
     (async () => {
       getUserSavedDataOrNull().then((user) => {
         setUser(user);
+        setIsLoading(false);
       });
     })();
     return () => {
