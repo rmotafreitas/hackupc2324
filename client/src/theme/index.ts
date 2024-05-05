@@ -8,7 +8,7 @@ export const THEME = {
 
     CAPTION_500: "#C1DFF0",
 
-    SHAPE: "#88CCF1",
+    SHAPE: "#1C4E32",
 
     PRIMARY: "#E89D57",
     COVER: "#2D848A",

@@ -21,7 +21,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../routes/app.routes";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Register">;
-export function Register() {
+export function Update() {
   const navigator = useNavigation();
 
   function goToLoginScreen() {
@@ -42,15 +42,19 @@ export function Register() {
     setIsLoading(true);
     const res = await api.post("/me", {
       email: formData.email,
-      password: formData.password,
       name: formData.name,
+      nutrionValue: formData.nutrionValue,
+      energyValue: formData.energyValue,
+      carbonValue: formData.carbonValue,
+      sugarValue: formData.sugarValue,
+      proteinValue: formData.proteinValue,
+      saltValue: formData.saltValue,
     });
     if (res.data.error) {
       setError(res.data.error);
       setIsError(true);
     } else {
       await AsyncStorage.setItem("@user", JSON.stringify(res.data));
-      await AsyncStorage.setItem("@token", res.data.access_token);
       userContext?.setUser(res.data);
       goToHome();
     }
@@ -59,26 +63,25 @@ export function Register() {
 
   const [formData, setFormData] = useState<{
     email: string;
-    password: string;
     name: string;
+    nutrionValue: number;
+    energyValue: number;
+    carbonValue: number;
+    sugarValue: number;
+    proteinValue: number;
+    saltValue: number;
   }>({
-    email: "",
-    password: "",
-    name: "",
+    email: userContext?.user?.email || "",
+    name: userContext?.user?.name || "",
+    nutrionValue: userContext?.user?.nutrionValue || 0,
+    energyValue: userContext?.user?.energyValue || 0,
+    carbonValue: userContext?.user?.carbonValue || 0,
+    sugarValue: userContext?.user?.sugarValue || 0,
+    proteinValue: userContext?.user?.proteinValue || 0,
+    saltValue: userContext?.user?.saltValue || 0,
   });
 
   const FORM_BUILDER_MAPPER = [
-    {
-      label: "Email",
-      name: "email",
-      input: {
-        value: formData?.email,
-        onChangeText: (text: string) =>
-          setFormData({ ...formData, email: text }),
-        placeholder: "Enter your email",
-      },
-      optional: false,
-    },
     {
       label: "Name",
       name: "name",
@@ -90,17 +93,69 @@ export function Register() {
       },
       optional: false,
     },
-
     {
-      label: "Password",
-      name: "password",
+      label: "Nutrion Value",
+      name: "nutrionValue",
       input: {
-        secureTextEntry: true,
-        value: formData?.password,
+        value: formData?.nutrionValue.toString(),
         onChangeText: (text: string) =>
-          setFormData({ ...formData, password: text }),
-        placeholder: "Enter your password",
-        multiline: false,
+          setFormData({ ...formData, nutrionValue: parseInt(text) }),
+        placeholder: "Enter your nutrion value",
+      },
+      optional: false,
+    },
+    {
+      label: "Energy Value",
+      name: "energyValue",
+      input: {
+        value: formData?.energyValue.toString(),
+        onChangeText: (text: string) =>
+          setFormData({ ...formData, energyValue: parseInt(text) }),
+        placeholder: "Enter your energy value",
+      },
+      optional: false,
+    },
+    {
+      label: "Carbon Value",
+      name: "carbonValue",
+      input: {
+        value: formData?.carbonValue.toString(),
+        onChangeText: (text: string) =>
+          setFormData({ ...formData, carbonValue: parseInt(text) }),
+        placeholder: "Enter your carbon value",
+      },
+      optional: false,
+    },
+    {
+      label: "Sugar Value",
+      name: "sugarValue",
+      input: {
+        value: formData?.sugarValue.toString(),
+        onChangeText: (text: string) =>
+          setFormData({ ...formData, sugarValue: parseInt(text) }),
+        placeholder: "Enter your sugar value",
+      },
+      optional: false,
+    },
+    {
+      label: "Protein Value",
+      name: "proteinValue",
+      input: {
+        value: formData?.proteinValue.toString(),
+        onChangeText: (text: string) =>
+          setFormData({ ...formData, proteinValue: parseInt(text) }),
+        placeholder: "Enter your protein value",
+      },
+      optional: false,
+    },
+    {
+      label: "Salt Value",
+      name: "saltValue",
+      input: {
+        value: formData?.saltValue.toString(),
+        onChangeText: (text: string) =>
+          setFormData({ ...formData, saltValue: parseInt(text) }),
+        placeholder: "Enter your salt value",
       },
       optional: false,
     },
@@ -123,7 +178,6 @@ export function Register() {
                 value={formData[item.name as keyof typeof formData]?.toString()}
                 onChangeText={item.input.onChangeText}
                 placeholder={item.input.placeholder}
-                multiline={item.input.multiline}
               />
             </View>
           ))}
@@ -144,14 +198,35 @@ export function Register() {
                 fontFamily: THEME.FONT_FAMILY.SEMI_BOLD,
               }}
             >
-              Register
+              Update
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              backgroundColor: THEME.COLORS.PRIMARY,
+              padding: 10,
+              borderRadius: 5,
+              width: "85%",
+              alignItems: "center",
+              marginTop: 20,
+            }}
+            onPress={() => {
+              AsyncStorage.removeItem("@user");
+              userContext?.setUser(null);
+              goToLoginScreen();
+            }}
+          >
+            <Text
+              style={{
+                color: THEME.COLORS.WHITE_TEXT,
+                fontFamily: THEME.FONT_FAMILY.SEMI_BOLD,
+              }}
+            >
+              Logout
             </Text>
           </TouchableOpacity>
           <View style={styles.center}>
-            <Reference
-              fn={goToLoginScreen}
-              label="Already have an account? 🥸 Login"
-            />
+            <Reference fn={goToHome} label="Go back to home screen 🫂" />
           </View>
         </ScrollView>
       </SafeAreaView>

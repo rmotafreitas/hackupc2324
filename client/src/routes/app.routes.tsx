@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useContext } from "react";
 import { UserContext } from "../contexts/user.context";
-import { Login, Register } from "../screens/Auth";
+import { Login, Register, Update } from "../screens/Auth";
 import { Home } from "../screens/Home";
 import { UploadCalories } from "../screens/UploadCalories";
 import { Table } from "../screens/Table";
@@ -16,6 +16,7 @@ interface LoginProps {}
 interface RegisterProps {}
 interface TableProps {}
 interface ChatProps {}
+interface UpdateProps {}
 
 export type RootStackParamList = {
   Home: HomeProps;
@@ -24,6 +25,7 @@ export type RootStackParamList = {
   Register: RegisterProps;
   Table: TableProps;
   Chat: ChatProps;
+  Update: UpdateProps;
 };
 
 const { Navigator, Screen } = createNativeStackNavigator<RootStackParamList>();
@@ -40,6 +42,7 @@ export function AppRoutes() {
     >
       <Screen name="Login" component={Login} />
       <Screen name="Register" component={Register} />
+      <Screen name="Update" component={Update} />
       <Screen name="Home" component={Home} />
       <Screen name="UploadCalories" component={UploadCalories} />
       <Screen name="Table" component={Table} />

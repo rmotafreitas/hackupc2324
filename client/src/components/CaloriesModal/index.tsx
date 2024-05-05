@@ -60,6 +60,7 @@ export function Input({
   placeholder,
   multiline,
   onEndEditing,
+  secureTextEntry,
 }: InputProps) {
   return (
     <TextInput
@@ -69,6 +70,7 @@ export function Input({
       editable={!disabled}
       placeholder={placeholder}
       onEndEditing={onEndEditing}
+      secureTextEntry={secureTextEntry}
     />
   );
 }

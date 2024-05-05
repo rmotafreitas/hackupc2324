@@ -8,6 +8,7 @@ export declare global {
         foodType: "BREAKFAST" | "LUNCH" | "DINNER" | "OTHER";
       };
       Chat: undefined;
+      Update: undefined;
     }
   }
 }

@@ -249,6 +249,10 @@ export function Home({ route, navigation }: Props) {
                 alignItems: "center",
                 borderRadius: 5,
               }}
+              onPress={() => {
+                // @ts-ignore
+                navigation.navigate("Update");
+              }}
             >
               <Image
                 style={{

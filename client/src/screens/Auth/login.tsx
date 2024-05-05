@@ -108,6 +108,7 @@ export function Login() {
                 onChangeText={item.input.onChangeText}
                 placeholder={item.input.placeholder}
                 multiline={item.input.multiline}
+                secureTextEntry={item?.input?.secureTextEntry || false}
               />
             </View>
           ))}
