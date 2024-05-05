@@ -19,6 +19,7 @@ import { SuccessContext } from "../../contexts/success.context";
 import { ErrorContext } from "../../contexts/error.context";
 import { api, caloriesPostResponse } from "../../api";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 interface Props extends ModalProps {
   handleClose: () => void;
@@ -172,6 +173,8 @@ export function CaloriesModal({
     },
   ];
 
+  const navigation = useNavigation();
+
   return (
     <Modal animationType="slide" statusBarTranslucent transparent {...rest}>
       <KeyboardAvoidingView behavior="padding" style={styles.container}>
@@ -244,6 +247,7 @@ export function CaloriesModal({
                     .then((res) => {
                       setSuccessMessage("Food added successfully");
                       handleClose();
+                      navigation.navigate("Home");
                     })
                     .catch((error) => {
                       console.error(error);

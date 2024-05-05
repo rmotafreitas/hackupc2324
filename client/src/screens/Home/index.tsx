@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -544,6 +544,7 @@ function Meals({
 }: MealsBox) {
   const navigation = useNavigation();
   const [unfold, setUnfold] = useState<boolean>(false);
+  const userContext = useContext(UserContext);
 
   return (
     <View
@@ -631,7 +632,6 @@ function Meals({
                 }}
               >
                 <Text>{food.name}</Text>
-                <Text>XYZg</Text>
               </View>
               <View
                 style={{

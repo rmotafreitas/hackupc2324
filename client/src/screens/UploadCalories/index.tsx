@@ -97,6 +97,8 @@ export function UploadCalories({ route, navigation }: Props) {
               handleClose={() => {
                 setIsCaloriesModalVisible(false);
                 setImage(null);
+                // @ts-expect-error
+                navigation.navigate("Home");
               }}
               formData={formData}
               setFormData={setFormData}

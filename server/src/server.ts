@@ -15,6 +15,7 @@ import { getAIChatRoute } from "./routes/chat/chat.ts";
 import { getAIChatSaveRoute } from "./routes/chat/chat-save.ts";
 import { getAIChatCompleteRoute } from "./routes/chat/chat-completition.ts";
 import { deleteAIChatRoute } from "./routes/chat/chat-delete.ts";
+import { deleteFood } from "./routes/user/deleteFood.ts";
 
 const host = "RENDER" in process.env ? `0.0.0.0` : `localhost`;
 
@@ -63,6 +64,7 @@ app.register(getAIChatRoute);
 app.register(getAIChatSaveRoute);
 app.register(getAIChatCompleteRoute);
 app.register(deleteAIChatRoute);
+app.register(deleteFood);
 
 app.register(fastifystatic, {
   root: path.join(__dirname, "..", "tmp"),
